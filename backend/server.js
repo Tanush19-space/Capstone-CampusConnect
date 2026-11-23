@@ -6,6 +6,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const FRONTEND_URL = process.env.FRONTEND_URL || "*";
 
 const connectDB = require("./config/db");
 
@@ -37,8 +38,6 @@ eventEmitter.on("attendanceMarked", (data) => {
     time: new Date().toLocaleString()
   });
 });
-
-const FRONTEND_URL = process.env.FRONTEND_URL || "*";
 
 app.use(cors({
   origin: FRONTEND_URL
