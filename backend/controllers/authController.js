@@ -71,12 +71,30 @@ const login = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid email or password"
-      });
-    }
+    console.log("LOGIN DEBUG:", {
+  userFound: !!user,
+  passwordExists: !!user?.password,
+  passwordHashType: typeof user?.password,
+  passwordHashLength: user?.password?.length
+});
+
+    if (!user) {
+  return res.status(401).json({
+    success: false,
+    message: "Invalid email or password"
+  });
+}
+
+const isMatch = await bcrypt.compare(password, user.password);
+
+console.log("PASSWORD MATCH:", isMatch);
+
+if (!isMatch) {
+  return res.status(401).json({
+    success: false,
+    message: "Invalid email or password"
+  });
+}
 
     const token = jwt.sign(
   { id: user._id, role: user.role },
