@@ -71,6 +71,8 @@ const login = async (req, res) => {
 
     const normalizedEmail = email?.trim().toLowerCase();
 
+    console.log("LOGIN EMAIL RECEIVED:", JSON.stringify(normalizedEmail));
+
     const user = await User.findOne({
   email: normalizedEmail
 });
