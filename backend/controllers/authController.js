@@ -69,7 +69,11 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const normalizedEmail = email?.trim().toLowerCase();
+
+    const user = await User.findOne({
+  email: normalizedEmail
+});
 
     console.log("LOGIN DEBUG:", {
   userFound: !!user,
