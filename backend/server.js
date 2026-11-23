@@ -21,7 +21,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: FRONTEND_URL,
     methods: ["GET", "POST"]
   }
 });
@@ -38,7 +38,11 @@ eventEmitter.on("attendanceMarked", (data) => {
   });
 });
 
-app.use(cors());
+const FRONTEND_URL = process.env.FRONTEND_URL || "*";
+
+app.use(cors({
+  origin: FRONTEND_URL
+}));
 app.use(express.json());
 app.use(requestLogger);
 
@@ -70,6 +74,14 @@ app.use("/api/sections", sectionRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/announcements", announcementRoutes);
 
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "CampusConnect API is running",
+    database: "Connected"
+  });
+});
+
 // Handle unknown routes
 app.use((req, res, next) => {
   const error = new Error(`Route not found: ${req.originalUrl}`);
@@ -99,7 +111,7 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   await connectDB();
 
-  server.listen(PORT, () => {
+  server.listen(PORT, "0.0.0.0", () => {
     console.log(`CampusConnect running on port ${PORT}`);
   });
 };
