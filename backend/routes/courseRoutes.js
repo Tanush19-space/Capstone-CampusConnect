@@ -9,7 +9,7 @@ const {
   getCourseAnalytics
 } = require("../controllers/courseController");
 
-const { protect, authorize } = require("../middleware/auth");
+const { protect, authorize } = require("../middleware/authMiddleware");
 
 router.get("/", protect, getCourses);
 router.post("/", protect, authorize("admin"), createCourse);
